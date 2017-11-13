@@ -1,0 +1,29 @@
+// add gradle-git plugin to all subprojects, but not root project
+plugins {
+  id 'org.ajoberstar.grgit' version '1.6.0' apply false
+}
+subprojects { subproject ->  apply plugin: 'org.ajoberstar.grgit'  }
+
+subprojects {
+  repositories {
+    mavenCentral()
+    jcenter()
+  }
+
+  apply plugin: 'java'
+
+  test {
+    testLogging {
+      events 'started', 'passed'
+      showStandardStreams = true
+      exceptionFormat = 'full'
+    }
+  }
+
+  gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+      options.compilerArgs << "-Xmaxerrs" << "1000"
+    }
+  }
+
+}

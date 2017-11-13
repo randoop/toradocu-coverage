@@ -1,0 +1,251 @@
+/* commons-collections */
+
+def libraryName = 'commons-collections'
+def libraryJar = 'commons-collections4-4.2-SNAPSHOT.jar'
+def repoURI = 'https://github.com/randoop/commons-collections.git'
+
+def inputsDir = file("${projectDir}/inputs")
+def resourceDir = "${projectDir}/resources"
+def specsDir = "${projectDir}/conditions"
+def librarySrcDir = "${inputsDir}/${libraryName}/src/main/java"
+def libraryJarPath = "${inputsDir}/${libraryName}/target/${libraryJar}"
+def libraryScriptPath = "${inputsDir}/${libraryName}/pom.xml"
+
+// common resources in top-level directory
+def commonSpecsDir = file("${rootProject.projectDir}/conditions")
+def randoopJar = "${rootProject.projectDir}/libs/randoop.jar"
+
+dependencies {
+  testCompile files(libraryJarPath)
+  testCompile group: 'junit', name: 'junit', version: '4.+'
+  testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
+}
+
+/**** Tasks for managing a local copy of Commons Collections ****/
+
+/*
+ * Download a copy of the project clone of Commons Collections
+ */
+task getInputs {
+  description 'Places source library for Commons Collections in inputs directory'
+  doLast {
+    def libInputsDir = file("${inputsDir}/${libraryName}")
+    if (!libInputsDir.exists()) {
+      org.ajoberstar.grgit.Grgit.clone(dir: libInputsDir, uri: repoURI)
+    } else {
+      println("WARNING: not cloning repo because already exists.")
+      println("         Force clone by running with cleanInputs")
+    }
+  }
+}
+
+/*
+ * Invokes the `ant jar` task for the Commons Collection files.
+ */
+task compileInputs(type: Exec) {
+  description "Compile subject library"
+  commandLine "mvn", "-f", libraryScriptPath, "-Dmaven.test.skip=true", "package"
+  outputs.file(libraryJarPath)
+}
+
+task cleanCompileInputs(type: Exec) {
+  description "Invokes clean task for subject library"
+  commandLine "mvn", "-f", libraryScriptPath, "clean"
+}
+
+/*
+ * Deletes files created by the `getInputs` task.
+ */
+task cleanInputs(type: Delete) {
+  delete 'inputs'
+}
+
+/**** Randoop tasks ****/
+
+task runRandoop() {
+  group 'test generation'
+  description "Runs Randoop to first error test (or 15 minutes) on resources/evallist.txt"
+  def inputClasspath = libraryJarPath
+  def classpath = files(inputClasspath, randoopJar).asPath
+  def cmd = "java -ea -cp ${classpath} randoop.main.Main gentests"
+  def classListFile = file("$resourceDir/evallist.txt")
+  def timeLimit = 900 // 15 minutes
+  def logfile = "randoop-log.txt"
+  def outputDir = "${projectDir}/src/test/java"
+  def runWorkingDir = "${projectDir}/build/working-directory"
+  def options = [
+    "--classlist=${classListFile}",
+    "--timelimit=${timeLimit}",
+    "--stop-on-error-test",
+    "--junit-output-dir=${outputDir}",
+    "--ignore-flaky-tests",
+    "--no-regression-tests",
+    "--log=${logfile}"
+  ]
+  inputs.file(inputClasspath)
+  inputs.file(classListFile)
+  outputs.dir(file(outputDir))
+  doLast {
+    if (file(runWorkingDir).exists()) {
+      delete runWorkingDir
+    }
+    file(runWorkingDir).mkdirs()
+    if (!file(outputDir).exists()) {
+      file(outputDir).mkdirs()
+    }
+    project.exec {
+      workingDir file(runWorkingDir)
+      commandLine = cmd.split().toList() + options
+    }
+  }
+}
+
+task runRandoopWithConditions(dependsOn: ['compileInputs']) {
+  group 'test generation'
+  description "Runs Randoop using conditions to first error test (or 15 minutes) on resources/evallist.txt"
+  def inputClasspath = libraryJarPath
+  def classpath = files(inputClasspath, randoopJar).asPath
+  def cmd = "java -ea -cp ${classpath} randoop.main.Main gentests"
+  def classListFile = file("$resourceDir/evallist.txt")
+  def specListFile = file("$resourceDir/speclist.txt")
+  def timeLimit = 900 // 15 minutes
+  def logfile = "${projectDir}/randoop-log.txt"
+  def outputDir = "${projectDir}/src/test/java"
+  def runWorkingDir = "${projectDir}/build/working-directory"
+  def options = [
+    "--classlist=${classListFile}",
+    "--timelimit=${timeLimit}",
+    "--stop-on-error-test",
+    "--junit-output-dir=${outputDir}",
+    "--ignore-flaky-tests",
+    "--no-regression-tests",
+    "--log=${logfile}"
+  ]
+  inputs.file(inputClasspath)
+  inputs.file(specListFile)
+  inputs.file(classListFile)
+  inputs.files(fileTree(specsDir) { include '**/*.json' }).skipWhenEmpty()
+  outputs.dir(file(outputDir))
+  doLast {
+    if (file(runWorkingDir).exists()) {
+      delete runWorkingDir
+    }
+    file(runWorkingDir).mkdirs()
+    if (!file(outputDir).exists()) {
+      file(outputDir).mkdirs()
+    }
+    def classList = classListFile.readLines()
+    def conditionOptions = classList.collect {
+      classname -> classname.replaceAll('\\.','-') + ".json"
+    }.findAll {
+      filename -> file("${specsDir}/filename").exists()
+    }.collect {
+      conditionFile -> "--specifications=${specsDir}/${conditionFile}"
+    }
+    def specList = specListFile.readLines()
+    def specOptions = specList.collect {
+      classname -> classname.replaceAll('\\.', '-') + ".json"
+    }.findAll {
+      filename -> file("${commonSpecsDir}/${filename}").exists()
+    }.collect {
+      conditionFile -> "--specifications=${commonSpecsDir}/${conditionFile}"
+    }
+    project.exec {
+      workingDir file(runWorkingDir)
+      commandLine = cmd.split().toList() + options + conditionOptions + specOptions
+    }
+  }
+}
+
+task cleanRandoop(type: Delete) {
+  description 'Removes Randoop generated tests'
+  delete fileTree('src/test/') {
+    include '**/*.java'
+  }
+}
+
+task cleanTest(type: Delete) {
+  description 'Removes class files for Randoop generated tests'
+  delete fileTree('build/classes/test/') {
+    include '**/*.class'
+  }
+}
+
+/*** Tasks to manage evaluation products ***/
+
+def evaluationResultsDir = file("${projectDir}/evaluation")
+def evaluationWorkingDir = file("${evaluationResultsDir}/working")
+
+
+task makeResultsDir() {
+  description "Creates the evaluation directory for this project"
+  outputs.dir { evaluationResultsDir }
+  doLast() {
+    if (!evaluationResultsDir.exists()) {
+      evaluationResultsDir.mkdirs()
+    }
+  }
+}
+
+task makeWorkingDir(dependsOn: 'makeResultsDir') {
+  description "Creates the working directory for the evaluation"
+  outputs.dir { evaluationWorkingDir }
+  doLast() {
+    if (!evaluationWorkingDir.exists()) {
+      evaluationWorkingDir.mkdirs()
+      def logFile = file("${evaluationWorkingDir}/evaluation-log.md")
+      logFile.text = "# Evaluation log for ${libraryName}\nAdd second-level header for each Randoop run during the evaluation.\n\n## test0\n"
+    }
+  }
+}
+
+task saveWorkingDir {
+  description 'Creates record of working directory'
+  def dirName = 'phase'
+  doLast {
+    def phaseCount = evaluationResultsDir.listFiles().findAll { it.name.startsWith(dirName) }.size()
+    def phaseDirName = "${evaluationResultsDir}/${dirName}${phaseCount}"
+    file(evaluationWorkingDir).renameTo(phaseDirName)
+    copy {
+      from fileTree("${inputsDir}/")
+      into "${phaseDirName}/modifiedinputs"
+    }
+  }
+}
+
+task makeTestDir(dependsOn: 'makeWorkingDir') {
+  description "Creates the next test directory in the evaluation directory"
+  def dirName = 'test'
+  doLast() {
+    def testCount = evaluationWorkingDir.listFiles().findAll { it.name.startsWith("${dirName}") }.size()
+    def testDirName = "${dirName}${testCount}"
+    def testDir = file("${evaluationWorkingDir}/${testDirName}")
+    if (!testDir.exists()) {
+      testDir.mkdirs()
+      println "Created directory $testDirName"
+    }
+  }
+}
+
+task saveTest {
+  description "Saves the Randoop generated tests in the current test directory"
+  def dirName = 'test'
+  def srcDir = file('src/test/java')
+  doLast() {
+    def dirCount = evaluationWorkingDir.listFiles().findAll { it.name.startsWith("${dirName}") }.size() - 1
+    if (dirCount < 0) {
+      throw new GradleException("Must run makeTestDir first");
+    }
+    def testDir = file("${evaluationWorkingDir}/${dirName}${dirCount}")
+    def testID = 0
+    if (testDir.listFiles().findAll { it.name.startsWith("ErrorTest0") }.size() > 0) {
+      testID = 1
+    }
+    copy {
+      from "$srcDir"
+      into "$testDir"
+      include '**/ErrorTest0.java'
+      rename { String name -> name.replace('0',"0-$testID") }
+    }
+  }
+}
