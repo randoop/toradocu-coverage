@@ -1,1 +1,7 @@
 include 'commons-collections'
+include 'commons-math'
+include 'commons-rng'
+include 'freecol'
+include 'guava'
+include 'jgrapht'
+include 'plume-lib'
