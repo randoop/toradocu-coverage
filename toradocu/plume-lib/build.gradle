@@ -26,7 +26,7 @@ dependencies {
 
 def buildAliases = [
   'prepareForRandoop'  : ['getClassList', 'compileInputs'],
-  'prepareForCoverage' : ['runRandoop', 'compileTestJava']
+  'prepareForCoverage' : ['cleanRandoop', 'cleanTest', 'runRandoop', 'compileTestJava']
 ]
 def expandedTaskList = []
 
@@ -99,6 +99,9 @@ task getClassList(dependsOn: [getInputs, makeResourceDir] ) {
   def sources = fileTree(librarySrcDir) {
     include '**/*.java'
     exclude '**/package-info.java'
+    exclude '**/MultiVersionControl.java'
+    exclude '**/Stopwatch.java'
+    exclude '**/TimeLimitProcess.java'
   }
   def classListFile = new File("${resourceDirPath}/classlist.txt")
   inputs.files(sources).skipWhenEmpty()
@@ -133,7 +136,7 @@ task runRandoop(dependsOn: [getClassList, compileInputs]) {
   def classpath = files(inputClasspath, randoopJar).asPath
   def cmd = "java -ea -cp ${classpath} randoop.main.Main gentests"
   def classListFile = file("$resourceDirPath/classlist.txt")
-  def timeLimit = 200
+  def timeLimit = 500
   def outputDir = "${projectDir}/src/test/java"
   def options = [
     "--classlist=${classListFile}",
@@ -143,13 +146,22 @@ task runRandoop(dependsOn: [getClassList, compileInputs]) {
     "--ignore-flaky-tests",
     "--no-error-revealing-tests",
     "--junit-reflection-allowed=false",
-//  "--omitmethods=${exclusions}",
-    "--outputlimit=400"
+    "--omitmethods=${exclusions}",
+    "--outputlimit=4000"
   ]
   inputs.file(inputClasspath)
   inputs.file(classListFile)
   outputs.dir(file(outputDir))
   doLast {
+    def classDirPath = "${inputsDir}/${libraryName}/java/src"
+    def dirListFile = new File("${resourceDirPath}/classdir.txt")
+    def writerD = dirListFile.newWriter()
+    writerD << classDirPath + "\n"
+    writerD.close()
+    def pathListFile = new File("${resourceDirPath}/classpath.txt")
+    def writerP = pathListFile.newWriter()
+    writerP << classpath + "\n"
+    writerP.close()
     if (!file(outputDir).exists()) {
       file(outputDir).mkdirs()
     }

@@ -1,14 +1,14 @@
 #!/bin/bash
 CORPUSDIR=toradocu
 #for dirname in $CORPUSDIR/*; do
-for dirname in $CORPUSDIR/jgrapht; do
+for dirname in $CORPUSDIR/plume-lib $CORPUSDIR/jgrapht; do
   [ -e "$dirname" ] || continue
 
   basename=`basename $dirname`
   log="../logs/$basename-fetch-log.txt"
 
   if [[ -d "$dirname" && ! -L "$dirname" ]]; then
-      echo "fetching $basename"
-      (cd $dirname; ./gradlew prepareForRandoop 2>&1 | tee $log)
+    echo "fetching $basename"
+    (cd $dirname; ./gradlew prepareForRandoop 2>&1 | tee $log)
   fi
 done

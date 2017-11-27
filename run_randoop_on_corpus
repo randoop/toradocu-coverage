@@ -1,0 +1,14 @@
+#!/bin/bash
+CORPUSDIR=toradocu
+#for dirname in $CORPUSDIR/*; do
+for dirname in $CORPUSDIR/plume-lib $CORPUSDIR/jgrapht; do
+  [ -e "$dirname" ] || continue
+
+  basename=`basename $dirname`
+  log="../logs/$basename-randoop-log.txt"
+
+  if [[ -d "$dirname" && ! -L "$dirname" ]]; then
+    echo "running randoop on $basename"
+    (cd $dirname; ./gradlew prepareForCoverage 2>&1 | tee $log)
+  fi
+done
