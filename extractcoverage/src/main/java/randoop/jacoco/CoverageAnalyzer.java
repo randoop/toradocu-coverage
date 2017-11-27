@@ -57,6 +57,8 @@ public class CoverageAnalyzer {
   @Option("the path for the replacecall agent")
   public static String replacecallAgentPath;
 
+  static Path projectPath;
+
   private static Options options = new Options(CoverageAnalyzer.class);
 
   public static void main(String[] args) {
@@ -76,6 +78,8 @@ public class CoverageAnalyzer {
     List<String> table = new ArrayList<>();
     try (DirectoryStream<Path> stream = Files.newDirectoryStream(corpusDirectory)) {
       for (Path projectPath : stream) {
+        Path testPath = projectPath.resolve("build.gradle");
+        if (!testPath.toFile().exists()) continue;
         Path projectOutPath = outputDirectory.resolve(projectPath.getFileName());
         table.addAll(visitProject(projectPath, projectOutPath));
       }
@@ -101,24 +105,18 @@ public class CoverageAnalyzer {
   private static List<String> visitProject(Path projectPath, Path projectOutPath) {
     System.out.printf("%nVisiting project: %s%n", projectPath.getFileName());
     List<String> table = new ArrayList<>();
-    String SCRIPTOUT_DIR = "dljc-out";
-    try (DirectoryStream<Path> stream = Files.newDirectoryStream(projectPath, SCRIPTOUT_DIR)) {
-      for (Path scriptOutPath : stream) {
-
-        try (DirectoryStream<Path> testStream = Files.newDirectoryStream(scriptOutPath, "test-classes*")) {
-          for (Path testPath : testStream) {
-            Path testOutPath = projectOutPath.resolve(testPath.getFileName());
-            String result = visitTests(testPath, testOutPath);
-            table.add(String.format("%s,%s", projectPath.getFileName(), result));
-          }
-        } catch (IOException e) {
-          System.err.printf(">>Unable to read test-classes directories from " + scriptOutPath.getFileName());
-        }
-
+    CoverageAnalyzer.projectPath = projectPath;
+    Path scriptOutPath = projectPath.resolve("build/classes");
+    try (DirectoryStream<Path> testStream = Files.newDirectoryStream(scriptOutPath, "test")) {
+      for (Path testPath : testStream) {
+        Path testOutPath = projectOutPath.resolve(testPath.getFileName());
+        String result = visitTests(testPath, testOutPath);
+        table.add(String.format("%s,%s", projectPath.getFileName(), result));
       }
     } catch (IOException e) {
-      System.err.printf(">>Unable to read " + SCRIPTOUT_DIR + " from " + projectPath.getFileName());
+      System.err.println(">>Unable to read directory " + scriptOutPath.getFileName());
     }
+
     return table;
   }
 
@@ -165,17 +163,30 @@ public class CoverageAnalyzer {
     ProcessStatus status = ProcessStatus.runCommand(command, workingDirectory);
     deleteDirectory(workingDirectory.toFile());
 
-    if (status.exitStatus != 0) {
-      if (status.exitStatus == 143) {
-        System.err.println(">>>>Run terminated");
-      } else {
-        System.err.println(">>>>Run failed with exit status " + status.exitStatus);
-      }
+    File logFile = testOutPath.resolve("log.txt").toFile();
+    try (PrintStream log = new PrintStream(logFile)) {
       for (String line : status.outputLines) {
-        System.err.println("      " + line);
+        log.println(line);
       }
-      System.out.println(" ]");
-      return noResult;
+    } catch (IOException e) {
+      System.err.print(">>>>failed to write log file: " + e.getMessage());
+    }
+
+    if (status.exitStatus != 0) {
+      if (status.exitStatus == 1) {
+        System.err.println(">>>>Run terminated with exit status 1");
+      } else {
+        if (status.exitStatus == 143) {
+          System.err.println(">>>>Run terminated");
+        } else {
+          System.err.println(">>>>Run failed with exit status " + status.exitStatus);
+        }
+        for (String line : status.outputLines) {
+          System.err.println("      " + line);
+        }
+        System.out.println(" ]");
+        return noResult;
+      }
     }
 
     // load the exec file
@@ -248,9 +259,8 @@ public class CoverageAnalyzer {
   }
 
   private static String getClasspath(Path testPath) {
-    List<Path> classpathFiles = getFiles(testPath, "classpath.txt");
-    assert classpathFiles.size() == 1;
-    try (BufferedReader in = new BufferedReader(new FileReader(classpathFiles.get(0).toFile()))) {
+    String testClasspath = projectPath.toString() + "/resources/classpath.txt";
+    try (BufferedReader in = new BufferedReader(new FileReader(testClasspath))) {
       return in.readLine();
     } catch (IOException e ) {
       System.err.printf("Error reading classpath file " + e.getMessage());
@@ -259,10 +269,9 @@ public class CoverageAnalyzer {
   }
 
   private static Path getInputClassDir(Path testPath) {
-    List<Path> classDirFiles = getFiles(testPath, "classdir.txt");
-    assert classDirFiles.size() == 1;
     String rootPathString;
-    try (BufferedReader in = new BufferedReader(new FileReader(classDirFiles.get(0).toFile()))) {
+    String testClassdir = projectPath.toString() + "/resources/classdir.txt";
+    try (BufferedReader in = new BufferedReader(new FileReader(testClassdir))) {
       rootPathString = in.readLine();
       return Paths.get(rootPathString);
     } catch (IOException e) {
