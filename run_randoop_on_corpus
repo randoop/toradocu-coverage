@@ -6,7 +6,7 @@ for dirname in $CORPUSDIR/*; do
   basename=`basename $dirname`
   log="../logs/$basename-randoop-log.txt"
 
-  if [[ -d "$dirname" && ! -L "$dirname" ]]; then
+  if [[ -e "$dirname/build.gradle" ]]; then
     echo "running randoop on $basename"
     (cd $dirname; ./gradlew prepareForCoverage 2>&1 | tee $log)
   fi
