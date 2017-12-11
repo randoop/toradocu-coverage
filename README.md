@@ -1,7 +1,7 @@
 # Toradocu-coverage computations
 
-This document describes how to setup and run an evaluation of Randoop test coverage over
-the Toradocu corpus.
+This document describes how to setup and run an evaluation of Randoop test
+coverage over the Toradocu corpus.
 
 
 ## Setup
@@ -44,26 +44,27 @@ mkdir -p toradocu/logs
 
 ## Controlling which Randoop is used
 
-By default the scripts will run the Randoop that is located in the `libs` subdirectory.
+By default the scripts will run the Randoop that is located in the
+`toradocu/libs` subdirectory.
 This is initially set to be the 3.1.5 release version of Randoop.
-To use a different Randoop, replace `libs/randoop.jar` with a
+To use a different Randoop, replace `toradocu/libs/randoop.jar` with a
 symbolic link to the version you want to use, probably in
 `build/libs/randoop-all-X.X.X.jar` of your clone of Randoop.  Example:
 ```
-cd libs
+cd toradocu/libs
 mv -f randoop.jar randoop.jar-ORIG
 ln -s $HOME/research/testing/randoop/build/libs/randoop-all-3.1.5.jar randoop.jar
 mv -f replacecall.jar replacecall.jar-ORIG
 ln -s $HOME/research/testing/randoop/build/libs/replacecall-3.1.5.jar replacecall.jar
-cd ..
+cd ../..
 ```
 
 
 ## Setting up the Toradocu test suites.
 
-When you clone the toradocu-coverage repository it will create a sub-directory for each
-of the test suites, but it does not download the tests themselves. This is run by running
-the fetch_and_compile_corpus script:
+When you clone the toradocu-coverage repository it will create a subdirectory
+for each of the test suites, but it does not download the tests themselves.
+This is run by running the fetch_and_compile_corpus script:
 ```
 ./fetch_and_compile_corpus
 ```
@@ -90,15 +91,16 @@ time consuming step and just:
 cd toradocu/<test suite of interest>
 ./gradlew prepareForRandoop
 ```
-This will not create the fetch log file; you can redirect standard out to do so.  If
-you are looking at commons-math, you must run the command above in commons-rng first.
+This will not create the fetch log file; you can redirect standard out to do so.
+If you are looking at commons-math, you must run the command above in commons-rng
+first.
 
 
 ## Running randoop to generate the coverage test cases.
 
-The next step is to run Randoop over the test suites to generate a set of test cases;
-then pass them to the java compiler.  This is done by running the run_randoop_on_corpus
-script:
+The next step is to run Randoop over the test suites to generate a set of test
+cases; then pass them to the java compiler.  This is done by running the
+run_randoop_on_corpus script:
 ```
 ./run_randoop_on_corpus
 ```
@@ -112,29 +114,33 @@ If you are only interested in testing a single suite, you may:
 cd toradocu/<test suite of interest>
 ./gradlew prepareForCoverage
 ```
-This will not create the randoop log file; you can redirect standard out to do so.  If
-you are looking at commons-math, you need not run any commands in commons-rng first.
+This will not create the randoop log file; you can redirect standard out to do so.
+If you are looking at commons-math, you need not run any commands in commons-rng
+first.
 
 
 ## Running the randoop generate tests and collecting the coverage data.
 
-The next step is to execute the Randoop generated tests under the control of the JaCoCo
-coverage tool to collect the coverage data.  This is done by running the coverage script:
+The next step is to execute the Randoop generated tests under the control of the
+JaCoCo coverage tool to collect the coverage data.  This is done by running the
+coverage script:
 ```
 ./coverage.sh
 ```
 This writes a single log file to `evaluation/logs/coverage-log.txt`.
-The script uses the `extractcoverage` program to pull all of the coverage information into
-`evaluation/coverage`.  The files written here include the aggregate `report-<date>.csv`, and a
-subdirectory for each test suite of the form:
+The script uses the `extractcoverage` program to pull all of the coverage
+information into `evaluation/coverage`.  The files written here include the
+aggregate `report-<date>.csv` and a subdirectory for each test suite of
+the form:
 ```
 evaluation/coverage/<suite name>/test/
 ├── jacoco.exec
 ├── log.txt
 └── report.csv
-```    
-which has the JaCoCo exec file, an execution log file and a csv file with the detailed coverage per method.
-If a failure occurs during the coverage script run, at least one of these files may be missing.
+```
+which has the JaCoCo exec file, an execution log file and a csv file with the
+detailed coverage per method.  If a failure occurs during the coverage script
+run, at least one of these files may be missing.
 
 
 ## Display summary coverage data
