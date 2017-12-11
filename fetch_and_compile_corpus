@@ -1,8 +1,7 @@
 #!/bin/bash
 CORPUSDIR=toradocu
-#for dirname in $CORPUSDIR/*; do
-for dirname in $CORPUSDIR/plume-lib $CORPUSDIR/jgrapht; do
-  [ -e "$dirname" ] || continue
+for dirname in $CORPUSDIR/*; do
+  [ -d "$dirname" ] || continue
 
   basename=`basename $dirname`
   log="../logs/$basename-fetch-log.txt"
