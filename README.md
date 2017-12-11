@@ -72,7 +72,7 @@ This will download and compile each of the test suites and generate a log in
 `toradocu/logs/<suite name>-fetch-log.txt`.  The test source will be found in
 `toradocu/<suite name>/inputs/<suite-name>`.  Some auxiliary files needed for
 the coverage process will be generated in `toradocu/<suite name>/resources`.
-This will take about 10-15 minutes per test suite. ??????????????????????????????
+This will take about 1-3 minutes per test suite.
 
 Currently, there are six test suites:
 ```
