@@ -1,25 +1,34 @@
 # Toradocu-coverage computations
 
-This is the initial state of the tools for evaluating Randoop test coverage over
+This document describes how to setup and run an evaluation of Randoop test coverage over
 the Toradocu corpus.
 
 
 ## Setup
 
-This is the directory structure that I use:
+This is the directory structure used for testing:
 ```
 toradocu-coverage
+├── calc-coverage.pl
 ├── coverage.sh
 ├── evaluation
 │   ├── coverage
 │   └── logs
 ├── extractcoverage
-├── toradocu
-│   ├── ????
-│   └── ????
+├── fetch_and_compile_corpus
 ├── libs
-├── logs
-└── run_dyntrace.sh
+├── README.md (this file)
+├── run_randoop_on_corpus
+└── toradocu
+    ├── commons-collections
+    ├── commons-math
+    ├── commons-rng
+    ├── freecol
+    ├── guava
+    ├── jgrapht
+    ├── libs
+    ├── logs
+    └── plume-lib
 ```
 It is somewhat historical and could be cleaned up.
 
@@ -29,26 +38,14 @@ git clone git@gitlab.cs.washington.edu:randoop/toradocu-coverage.git
 cd toradocu-coverage
 mkdir -p evaluation/coverage
 mkdir -p evaluation/logs
-mkdir logs
-wget http://search.maven.org/remotecontent?filepath=org/jacoco/jacoco/0.7.9/jacoco-0.7.9.zip -O jacoco-0.7.9.zip
-unzip -j jacoco-0.7.9.zip lib/jacocoagent.jar -d libs
-\rm -f jacoco-0.7.9.zip
-```
-
-Finally, you may want to update `extractcoverage/libs/plume.jar` with the
-[current release](https://github.com/mernst/plume-lib/releases/latest).
-```
-wget https://github.com/mernst/plume-lib/releases/download/v1.1.2/plume-lib-1.1.2.tar.gz
-tar zxvf plume-lib-1.1.2.tar.gz -C libs plume-lib-1.1.2/java/plume.jar
-\rm -f plume-lib-1.1.2.tar.gz
-mv libs/plume-lib-1.1.2/java/plume.jar extractcoverage/libs/
-\rm -rf libs/plume-lib-1.1.2
+mkdir -p toradocu/logs
 ```
 
 
 ## Controlling which Randoop is used
 
 By default the scripts will run the Randoop that is located in the `libs` subdirectory.
+This is initially set to be the 3.1.5 release version of Randoop.
 To use a different Randoop, replace `libs/randoop.jar` with a
 symbolic link to the version you want to use, probably in
 `build/libs/randoop-all-X.X.X.jar` of your clone of Randoop.  Example:
@@ -62,64 +59,91 @@ cd ..
 ```
 
 
-## Running
+## Setting up the Toradocu test suites.
 
+When you clone the toradocu-coverage repository it will create a sub-directory for each
+of the test suites, but it does not download the tests themselves. This is run by running
+the fetch_and_compile_corpus script:
 ```
-bash ./run_dyntrace.sh
-bash ./coverage.sh
-cd evaluation/coverage
-tail -n +2 report*.csv | sort -t , -k1,1 -k2,2n >> report-`date +%Y%m%d`.csv
-cd ..
+./fetch_and_compile_corpus
 ```
+This will download and compile each of the test suites and generate a log in
+`toradocu/logs/<suite name>-fetch-log.txt`.  The test source will be found in
+`toradocu/<suite name>/inputs/<suite-name>`.  Some auxiliary files needed for
+the coverage process will be generated in `toradocu/<suite name>/resources`.
+This will take about 10-15 minutes per test suite. ??????????????????????????????
 
-The `run_dyntrace.sh` script uses Randoop to generate
-tests in directories such as
-`corpus/<program-name>/build/classes/test/test-{src,classes}[0-9]+`.
-The `run_dyntrace` script writes logs into `toradocu-coverage/logs`.
-It runs for about ? hours.
-It is recommended that you run the scripts on a server without connecting your windowing system.
-
-The library code in the corpus makes many attempts to open a window, but the replacecall agent
-should prevent the windows from being created.
-However, depending on your OS/windowing system, the process may steal window focus, which can be disruptive to doing actual work.
-If you get actual windows or dialogs, please report an issue to Randoop.
-
-The `coverage.sh` script runs the generated tests.
-It completes in about ? minutes.
-Again, it will pop up windows; you should wait for them to close by themselves.
-The `coverage.sh` script
-uses the `extractcoverage` program to pull all of the coverage information into
-`evaluation/coverage`.
-The files written into `evaluation/coverage` include the aggregate `report.csv` (which is what goes into the Google docs spreadsheet), and subdirectories such as
-
+Currently, there are six test suites:
 ```
-evaluation/coverage/thumbnailinator/
-└── test-classes1
-    ├── jacoco.exec
-    └── report.csv
+commons-collections
+commons-math (which uses commons-rng)
+freecol
+guava
+jgrapht
+plume-lib
+```
+(NOTE that freecol is currently disabled.)
+
+If you are only interested in testing a single suite, you may want to skip this
+time consuming step and just:
+```
+cd toradocu/<test suite of interest>
+./gradlew prepareForRandoop
+```
+This will not create the fetch log file; you can redirect standard out to do so.  If
+you are looking at commons-math, you must run the command above in commons-rng first.
+
+
+## Running randoop to generate the coverage test cases.
+
+The next step is to run Randoop over the test suites to generate a set of test cases;
+then pass them to the java compiler.  This is done by running the run_randoop_on_corpus
+script:
+```
+./run_randoop_on_corpus
+```
+This will generate a log file in `toradocu/logs/<suite name>-randoop-log.txt`.
+The generated test source will be found in `toradocu/<suite name>/src/test/java`.
+The corresponding class files in `toradocu/<suite name>/build/classes/test`.
+This will take about 10-15 minutes per test suite.
+
+If you are only interested in testing a single suite, you may:
+```
+cd toradocu/<test suite of interest>
+./gradlew prepareForCoverage
+```
+This will not create the randoop log file; you can redirect standard out to do so.  If
+you are looking at commons-math, you need not run any commands in commons-rng first.
+
+
+## Running the randoop generate tests and collecting the coverage data.
+
+The next step is to execute the Randoop generated tests under the control of the JaCoCo
+coverage tool to collect the coverage data.  This is done by running the coverage script:
+```
+./coverage.sh
+```
+This writes a single log file to `evaluation/logs/coverage-log.txt`.
+The script uses the `extractcoverage` program to pull all of the coverage information into
+`evaluation/coverage`.  The files written here include the aggregate `report-<date>.csv`, and a
+subdirectory for each test suite of the form:
+```
+evaluation/coverage/<suite name>/test/
+├── jacoco.exec
+├── log.txt
+└── report.csv
 ```    
-
-which has the JaCoCo exec file, and a csv file with the extracted coverage per method.
+which has the JaCoCo exec file, an execution log file and a csv file with the detailed coverage per method.
 If a failure occurs during the coverage script run, at least one of these files may be missing.
 
-The `coverage` script writes a single log as `toradocu-coverage/evaluation/logs/coverage-log.txt`.
 
+## Display summary coverage data
 
-## Updating the spreadsheet
-
-To update the
-[MUSE Toradocu UW Randoop metrics spreadsheet](https://docs.google.com/spreadsheets/d/1SOh1EtNzQsSsTyFwOmIDMHK_HziKncqirLuQDoH7yEs/edit#gid=1134337280)
-on Google Sheets do the following steps:
-1. Do "File >> Import >> Upload >> Select a file from your computer >> `evaluation/coverage/report-20173028.csv` (adjust file name) >> Create new spreadsheet >> open now"
-2. Select and copy the last four columns ("covered lines" through "total methods").
-3. Navigate to the [MUSE Toradocu UW Randoop metrics spreadsheet](https://docs.google.com/spreadsheets/d/1SOh1EtNzQsSsTyFwOmIDMHK_HziKncqirLuQDoH7yEs/edit#gid=1134337280)
-4. Add 4 new blank columns at the right.  Scroll horizontally to the rightmost column. Right-click the last column and choose `Insert 1 right`, or select the last column and in the main menu do `Insert->Column right`. Repeat a total of 4 times.
-Click in the second cell in the first new column and paste the new contents.
-5. In the top row of the new columns, enter the date, the Randoop version (which may be a working version (**TODO: how to determine which information to enter here?**)), and information about the timelimit and outputlimit used in dyntrace, which you can find in the declaration of procedure `generate_tests` in file toradocu-coverage/integration-test2/tools/do-like-javac/do_like_javac/tools/dyntrace.py`
-6. Scroll to the bottom, copy the 3 by 4 block of cells with the formulas for the Sum, Coverage, and Package Count from the previous set of results. Then paste these into the corresponding cells in the new columns.
-7. Add or fix any boundary lines affected by the insertion. (**TODO: how to do this?**)
+```
+./calc-coverage.pl evaluation/coverage/report-<date>.csv
+```
 
 
 ## Caveat
 
-Nothing in the repository currently counts the number of generated tests.
+Nothing in this process currently counts the number of generated tests.
