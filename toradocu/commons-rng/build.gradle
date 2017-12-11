@@ -66,3 +66,6 @@ task cleanCompileInputs(type: Exec) {
 task cleanInputs(type: Delete) {
   delete 'inputs'
 }
+
+task getClassList(dependsOn: [getInputs] ) {
+}
