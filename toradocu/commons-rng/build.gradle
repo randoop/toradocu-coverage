@@ -9,6 +9,8 @@ def libraryName = 'commons-rng'
 def repoURI = 'https://github.com/randoop/commons-rng.git'
 
 def inputsDir = file("${projectDir}/inputs")
+def libraryScriptPath = "${inputsDir}/${libraryName}/pom.xml"
+
 def libraryDirs = [
   "${inputsDir}/${libraryName}/commons-rng-client-api/src/main/java",
   "${inputsDir}/${libraryName}/commons-rng-core/src/main/java",
@@ -24,17 +26,15 @@ def libraryJars = [
   "${inputsDir}/${libraryName}/commons-rng-simple/target/commons-rng-simple-1.1-SNAPSHOT.jar"
   ]
 def libraryClassPath = files(libraryJars, mavenCachePath).asPath
-def libraryScriptPath = "${inputsDir}/${libraryName}/pom.xml"
 
 dependencies {
-  //
   testCompile files(libraryClassPath)
   testCompile group: 'junit', name: 'junit', version: '4.+'
   testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
 }
 
 task getInputs {
-  description 'Places source library for Commons Collections in inputs directory'
+  description 'Places source library for commons-rng in inputs directory'
   doLast {
     def libInputsDir = file("${inputsDir}/${libraryName}")
     if (!libInputsDir.exists()) {
@@ -47,9 +47,9 @@ task getInputs {
 }
 
 /*
- * Invokes the `ant jar` task for the Commons Collection files.
+ * Compiles the commons-rng source files
  */
-task compileInputs(type: Exec) {
+task compileInputs(type: Exec, dependsOn: getInputs) {
   description "Compile subject library"
   commandLine "mvn", "-f", libraryScriptPath, "-DMaven.test.skip=true", "package"
   outputs.files(libraryJars)

@@ -131,17 +131,17 @@ task runRandoop(dependsOn: [getClassList, compileInputs]) {
   def classpath = files(inputClasspath, randoopJar).asPath
   def cmd = "java -ea -cp ${classpath} randoop.main.Main gentests"
   def classListFile = file("$resourceDirPath/classlist.txt")
-  def timeLimit = 500
   def outputDir = "${projectDir}/src/test/java"
   def options = [
     "--classlist=${classListFile}",
-    "--timelimit=${timeLimit}",
+    "--time-limit=900",
     "--stop-on-error-test=false",
     "--junit-output-dir=${outputDir}",
     "--ignore-flaky-tests",
     "--no-error-revealing-tests",
     "--junit-reflection-allowed=false",
-    "--outputlimit=4000"
+    "--usethreads",
+    "--output-limit=2000"
   ]
   inputs.file(inputClasspath)
   inputs.file(classListFile)
