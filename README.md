@@ -92,8 +92,8 @@ cd toradocu/<test suite of interest>
 ./gradlew prepareForRandoop
 ```
 This will not create the fetch log file; you can redirect standard out to do so.
-If you are looking at commons-math, you must run the command above in commons-rng
-first.
+If you are looking at commons-math, you must also run the command above in
+commons-rng.
 
 
 ## Running randoop to generate the coverage test cases.
