@@ -32,13 +32,16 @@ toradocu-coverage
 ```
 It is somewhat historical and could be cleaned up.
 
-To create this directory structure:
+To create this directory structure and build the coverage tool:
 ```
 git clone git@gitlab.cs.washington.edu:randoop/toradocu-coverage.git
 cd toradocu-coverage
 mkdir -p evaluation/coverage
 mkdir -p evaluation/logs
 mkdir -p toradocu/logs
+cd extractcoverage
+./gradlew assemble
+cd ..
 ```
 
 
@@ -141,6 +144,7 @@ evaluation/coverage/<suite name>/test/
 which has the JaCoCo exec file, an execution log file and a csv file with the
 detailed coverage per method.  If a failure occurs during the coverage script
 run, at least one of these files may be missing.
+This will take about 1-2 minutes.
 
 
 ## Display summary coverage data
