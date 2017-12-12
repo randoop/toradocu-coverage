@@ -7,6 +7,9 @@ my $tot_line = 0;
 my $tot_exec = 0;
 my @fields;
 
+    print "Test    Lines     Total    %", "\n";
+    print "name    covered   lines    coverage", "\n";
+
     while (<>) {
         chomp;
         @fields = split /,/;
@@ -23,7 +26,6 @@ my @fields;
                 printf("%s: %d %d %.2f\n", $fields[0], $fields[2], $fields[3], $fields[2]/$fields[3]);
             }
     }    
-    print "Number tests: ", $test_count, "\n";
-    print "Total lines: ", $tot_line, "\n";
-    print "Lines executed: ", $tot_exec, "\n";
-    printf("Coverage: %.2f\n", $tot_exec/$tot_line);
+
+    printf("\nTotals for %d tests: \n", $test_count);
+    printf("        %d %d %.2f\n", $tot_exec, $tot_line, $tot_exec/$tot_line);
