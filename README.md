@@ -67,7 +67,7 @@ cd ../..
 
 When you clone the toradocu-coverage repository it will create a subdirectory
 for each of the test suites, but it does not download the tests themselves.
-This is run by running the fetch_and_compile_corpus script:
+This is done by running the fetch_and_compile_corpus script:
 ```
 ./fetch_and_compile_corpus
 ```
@@ -122,7 +122,7 @@ If you are looking at commons-math, you need not run any commands in commons-rng
 first.
 
 
-## Running the randoop generate tests and collecting the coverage data.
+## Running the randoop generated tests and collecting the coverage data.
 
 The next step is to execute the Randoop generated tests under the control of the
 JaCoCo coverage tool to collect the coverage data.  This is done by running the
@@ -132,7 +132,8 @@ coverage script:
 ```
 This writes a single log file to `evaluation/logs/coverage-log.txt`.
 The script uses the `extractcoverage` program to pull all of the coverage
-information into `evaluation/coverage`.  The files written here include the
+information into the `evaluation/coverage` directory.  The files written here
+include the
 aggregate `report-<date>.csv` and a subdirectory for each test suite of
 the form:
 ```
