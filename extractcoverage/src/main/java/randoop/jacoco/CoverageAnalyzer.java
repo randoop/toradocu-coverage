@@ -160,6 +160,9 @@ public class CoverageAnalyzer {
     command.add(testClasspath);
     String DRIVER_NAME = "RegressionTestDriver";
     command.add(DRIVER_NAME);
+
+    System.out.println(command);
+
     ProcessStatus status = ProcessStatus.runCommand(command, workingDirectory);
     deleteDirectory(workingDirectory.toFile());
 
