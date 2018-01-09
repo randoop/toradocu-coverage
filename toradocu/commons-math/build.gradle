@@ -146,7 +146,7 @@ task runRandoop() {
     "--time-limit=900",
     "--stop-on-error-test=false",
     "--junit-output-dir=${outputDir}",
-    "--ignore-flaky-tests",
+    "--flaky-test-behavior=output",
     "--no-error-revealing-tests",
     "--junit-reflection-allowed=false",
     "--usethreads",

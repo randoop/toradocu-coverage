@@ -4,7 +4,7 @@ def libraryName = 'plume-lib'
 def libraryJar = 'plume.jar'
 def repoURI = 'https://github.com/randoop/plume-lib.git'
 
-def exclusions = 'plume\\.Options\\.parse_or_usage|plume\\.CountingPrintWriter\\.append|java\\.io\\.PrintWriter\\.append'
+def exclusions = 'plume\\.UtilMDE\\.rpad|plume\\.Options\\.parse_or_usage|plume\\.CountingPrintWriter\\.append|java\\.io\\.PrintWriter\\.append'
 
 def inputsDir = file("${projectDir}/inputs")
 def resourceDirPath = "${projectDir}/resources"
@@ -142,7 +142,7 @@ task runRandoop(dependsOn: [getClassList, compileInputs]) {
     "--time-limit=900",
     "--stop-on-error-test=false",
     "--junit-output-dir=${outputDir}",
-    "--ignore-flaky-tests",
+    "--flaky-test-behavior=output",
     "--no-error-revealing-tests",
     "--junit-reflection-allowed=false",
     "--usethreads",
