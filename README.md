@@ -86,7 +86,6 @@ guava
 jgrapht
 plume-lib
 ```
-(NOTE that freecol is currently disabled.)
 
 If you are only interested in testing a single suite, you may want to skip this
 time consuming step and just:
