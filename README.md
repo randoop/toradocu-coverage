@@ -147,11 +147,15 @@ run, at least one of these files may be missing.
 This will take about 1-2 minutes.
 
 
-## Display summary coverage data
+## Displaying the coverage data
 
+The raw coverage data will be found at evaluation/coverage/report-<date>.csv.
+You may display the coverage results by running the perl script:
 ```
-./calc-coverage.pl evaluation/coverage/report-<date>.csv
+./show-coverage.pl
 ```
+This script will accept an optional argument of an alternative file location.
+Invoke the script with -help for a full list of options.
 
 
 ## Caveat
