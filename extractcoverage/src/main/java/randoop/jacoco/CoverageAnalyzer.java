@@ -153,8 +153,8 @@ public class CoverageAnalyzer {
     List<String> command = new ArrayList<>();
     command.add("java");
     command.add("-Xbootclasspath/a:" + replacecallAgentPath);
-    command.add("-javaagent:" + jacocoAgentPath + "=destfile=" + execFile + ",excludes=org.junit.*");
     command.add("-javaagent:" + replacecallAgentPath);
+    command.add("-javaagent:" + jacocoAgentPath + "=destfile=" + execFile + ",excludes=org.junit.*");
     command.add("-ea");
     command.add("-classpath");
     command.add(testClasspath);
@@ -174,16 +174,14 @@ public class CoverageAnalyzer {
     } catch (IOException e) {
       System.err.print(">>>>failed to write log file: " + e.getMessage());
     }
-
+System.out.printf("exitStatus: %d%n", status.exitStatus);
     if (status.exitStatus != 0) {
-      if (status.exitStatus == 1) {
-        System.err.println(">>>>Run terminated with exit status 1");
+      // Toradoco/freecol sends itself a SIGTERM; so we need to
+      // treat that as fuzzy success just like status=1.
+      if (status.exitStatus == 1 || status.exitStatus == 143) {
+        System.err.println(">>>>Run terminated with exit status: " + status.exitStatus);
       } else {
-        if (status.exitStatus == 143) {
-          System.err.println(">>>>Run terminated");
-        } else {
-          System.err.println(">>>>Run failed with exit status " + status.exitStatus);
-        }
+        System.err.println(">>>>Run failed with exit status " + status.exitStatus);
         for (String line : status.outputLines) {
           System.err.println("      " + line);
         }
