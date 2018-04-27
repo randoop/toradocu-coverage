@@ -144,7 +144,7 @@ evaluation/coverage/<suite name>/test/
 which has the JaCoCo exec file, an execution log file and a csv file with the
 detailed coverage per method.  If a failure occurs during the coverage script
 run, at least one of these files may be missing.
-This will take about 1-2 minutes.
+This will take about 5-6 minutes.
 
 
 ## Displaying the coverage data
