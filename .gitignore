@@ -1,6 +1,7 @@
 build/
 .gradle/
 gradle/
+evaluation/
 inputs/
 logs/
 resources/
