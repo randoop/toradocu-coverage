@@ -174,7 +174,8 @@ public class CoverageAnalyzer {
     } catch (IOException e) {
       System.err.print(">>>>failed to write log file: " + e.getMessage());
     }
-System.out.printf("exitStatus: %d%n", status.exitStatus);
+    System.out.printf("exitStatus: %d%n", status.exitStatus);
+
     if (status.exitStatus != 0) {
       // Toradoco/freecol sends itself a SIGTERM; so we need to
       // treat that as fuzzy success just like status=1.
