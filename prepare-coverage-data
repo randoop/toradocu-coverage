@@ -6,7 +6,7 @@ prepare-coverage-data
 
 =head1 SYNOPSIS
 
-prepare-coverage-data [options] [optional coverage xml file]
+prepare-coverage-data [options] [optional toradocu coverage file]
 
  Options:
   -help        brief help message
