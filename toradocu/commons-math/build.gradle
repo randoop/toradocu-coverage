@@ -22,9 +22,12 @@ def libraryJars = [
 
 // common resources in top-level directory
 def randoopJar = "${rootProject.projectDir}/libs/randoop.jar"
+def replacecallJar = "${rootProject.projectDir}/libs/replacecall.jar"
+def replacementsFile = "${rootProject.projectDir}/libs/default-replacements.txt"
 
 dependencies {
   testCompile files(libraryJars)
+  testCompile files(replacecallJar)
   testCompile group: 'junit', name: 'junit', version: '4.+'
   testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
 }
@@ -138,7 +141,7 @@ task runRandoop() {
   description "Runs Randoop to first error test (or 15 minutes) on resources/evallist.txt"
   def inputClasspath = files(libraryJars).asPath
   def classpath = files(inputClasspath, randoopJar).asPath
-  def cmd = "java -ea -cp ${classpath} randoop.main.Main gentests"
+  def cmd = "java -ea -cp ${classpath} -Xbootclasspath/a:${replacecallJar} -javaagent:${replacecallJar}=--replacement-file=${replacementsFile} randoop.main.Main gentests"
   def classListFile = file("$resourceDirPath/classlist.txt")
   def outputDir = "${projectDir}/src/test/java"
   def options = [
