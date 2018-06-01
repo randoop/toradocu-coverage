@@ -19,7 +19,7 @@ show-coverage.pl [options] [optional toradocu coverage file]
 
 =item B<-help>
 
-Print a brief help message and exits.
+Print a brief help message and exit.
 
 =item B<-details>
 

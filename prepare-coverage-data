@@ -18,7 +18,7 @@ prepare-coverage-data [options] [optional toradocu coverage file]
 
 =item B<-help>
 
-Print a brief help message and exits.
+Print a brief help message and exit.
 
 =item B<-man>
 
