@@ -13,7 +13,6 @@ def libraryScriptPath = "${inputsDir}/${libraryName}/jgrapht-core/pom.xml"
 // common resources in top-level directory
 def randoopJar = "${rootProject.projectDir}/libs/randoop.jar"
 def replacecallJar = "${rootProject.projectDir}/libs/replacecall.jar"
-def replacementsFile = "${rootProject.projectDir}/libs/default-replacements.txt"
 
 dependencies {
   testCompile files(libraryJarPath)
@@ -132,7 +131,7 @@ task runRandoop(dependsOn: [getClassList, compileInputs]) {
   description "Runs Randoop to first error test (or 15 minutes) on resources/evallist.txt"
   def inputClasspath = libraryJarPath
   def classpath = files(inputClasspath, randoopJar).asPath
-  def cmd = "java -ea -cp ${classpath} -Xbootclasspath/a:${replacecallJar} -javaagent:${replacecallJar}=--replacement-file=${replacementsFile} randoop.main.Main gentests"
+  def cmd = "java -ea -cp ${classpath} -Xbootclasspath/a:${replacecallJar} -javaagent:${replacecallJar} randoop.main.Main gentests"
   def classListFile = file("$resourceDirPath/classlist.txt")
   def outputDir = "${projectDir}/src/test/java"
   def options = [
