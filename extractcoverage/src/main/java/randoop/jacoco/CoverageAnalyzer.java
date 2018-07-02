@@ -126,6 +126,8 @@ public class CoverageAnalyzer {
     Pattern testIDPattern = Pattern.compile("\\d+");
     Matcher testIDMatcher = testIDPattern.matcher(testPath.getFileName().toString());
     String testID = testPath.getFileName().toString();
+    // make default case "1" not "test"
+    testID = "1";
     if (testIDMatcher.find()) {
        testID = testIDMatcher.group();
     }
