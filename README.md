@@ -9,7 +9,6 @@ coverage over the Toradocu corpus.
 This is the directory structure used for testing:
 ```
 toradocu-coverage
-├── calc-coverage.pl
 ├── coverage.sh
 ├── evaluation
 │   ├── coverage
@@ -19,6 +18,7 @@ toradocu-coverage
 ├── libs
 ├── README.md (this file)
 ├── run_randoop_on_corpus
+├── show-coverage.pl
 └── toradocu
     ├── commons-collections
     ├── commons-math
@@ -56,9 +56,9 @@ symbolic link to the version you want to use, probably in
 ```
 cd toradocu/libs
 mv -f randoop.jar randoop.jar-ORIG
-ln -s $HOME/research/testing/randoop/build/libs/randoop-all-4.0.3.jar randoop.jar
+ln -s $HOME/randoop/build/libs/randoop-all-4.0.4.jar randoop.jar
 mv -f replacecall.jar replacecall.jar-ORIG
-ln -s $HOME/research/testing/randoop/build/libs/replacecall-4.0.3.jar replacecall.jar
+ln -s $HOME/randoop/build/libs/replacecall-4.0.4.jar replacecall.jar
 cd ../..
 ```
 
