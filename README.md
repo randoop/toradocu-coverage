@@ -4,6 +4,12 @@ This document describes how to setup and run an evaluation of Randoop test
 coverage over the Toradocu corpus.
 
 
+## Prerequisites
+
+Ensure that Maven is installed (that is, the `mvn` binary is available), or
+you will get obscure errors.
+
+
 ## Setup
 
 This is the directory structure used for testing:
