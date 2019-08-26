@@ -103,6 +103,9 @@ This will not create the fetch log file; you can redirect standard out to do so.
 If you are looking at commons-math, you must also run the command above in
 commons-rng.
 
+Note: The test org.apache.commons.rng.sampling.distribution.ContinuousSamplerParametricTest
+might fail; if this is the only failure, it can be ignored.
+
 
 ## Running randoop to generate the coverage test cases.
 
