@@ -8,4 +8,6 @@ jobs:
     fetchDepth: 25
   - bash: mkdir -p evaluation/coverage && mkdir -p evaluation/logs && mkdir -p toradocu/logs && (cd extractcoverage && ./gradlew assemble)
     displayName: create-directory-structure.sh
+  - bash: ./fetch_and_compile_corpus
+    displayName: fetch_and_compile_corpus
 # TODO: use a different version of Randoop
