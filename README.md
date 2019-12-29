@@ -45,9 +45,7 @@ cd toradocu-coverage
 mkdir -p evaluation/coverage
 mkdir -p evaluation/logs
 mkdir -p toradocu/logs
-cd extractcoverage
-./gradlew assemble
-cd ..
+(cd extractcoverage && ./gradlew assemble)
 ```
 
 

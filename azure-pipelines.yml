@@ -1,0 +1,11 @@
+jobs:
+- job: everything
+  pool:
+    vmImage: 'ubuntu-16.04'
+  container: mdernst/toradocucoverage-ubuntu-jdk8:latest
+  steps:
+  - checkout: self
+    fetchDepth: 25
+  - bash: mkdir -p evaluation/coverage && mkdir -p evaluation/logs && mkdir -p toradocu/logs && (cd extractcoverage && ./gradlew assemble)
+    displayName: create-directory-structure.sh
+# TODO: use a different version of Randoop
