@@ -1,4 +1,8 @@
 #!/bin/bash
+
+set +e
+set +x
+
 CORPUSDIR=toradocu
 mkdir -p $CORPUSDIR/logs
 for dirname in $CORPUSDIR/*; do

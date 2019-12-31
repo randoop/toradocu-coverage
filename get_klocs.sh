@@ -1,4 +1,8 @@
 #!/bin/bash
+
+set +e
+set +x
+
 CORPUSDIR=toradocu
 for dirname in $CORPUSDIR/*; do
   [ -d "$dirname" ] || continue
