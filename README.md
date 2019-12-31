@@ -3,6 +3,16 @@
 This document describes how to setup and run an evaluation of Randoop test
 coverage over the Toradocu corpus.
 
+Currently, there are six test projects:
+```
+commons-collections
+commons-math (which uses commons-rng)
+freecol
+guava
+jgrapht
+plume-lib
+```
+
 
 ## Prerequisites
 
@@ -28,13 +38,13 @@ toradocu-coverage
 └── toradocu
     ├── commons-collections
     ├── commons-math
-    ├── commons-rng
     ├── freecol
     ├── guava
     ├── jgrapht
-    ├── libs
-    ├── logs
-    └── plume-lib
+    ├── plume-lib
+    ├── commons-rng (used by commons-math)
+    ├── libs (support files)
+    └── logs (support files)
 ```
 It is somewhat historical and could be cleaned up.
 
@@ -53,53 +63,36 @@ mkdir -p toradocu/logs
 
 By default the scripts will run the Randoop that is located in the
 `toradocu/libs` subdirectory.
-This is initially set to be the 3.1.5 release version of Randoop.
-To use a different Randoop, replace `toradocu/libs/randoop.jar` with a
-symbolic link to the version you want to use, probably in
-`build/libs/randoop-all-X.X.X.jar` of your clone of Randoop.  Example:
+To use a different version, run
 ```
-cd toradocu/libs
-mv -f randoop.jar randoop.jar-ORIG
-ln -s $HOME/randoop/build/libs/randoop-all-4.0.4.jar randoop.jar
-mv -f replacecall.jar replacecall.jar-ORIG
-ln -s $HOME/randoop/build/libs/replacecall-4.0.4.jar replacecall.jar
-cd ../..
+(cd toradocu/libs && MY_RANDOOP/scripts/replace-randoop-jars.sh)
 ```
 
 
-## Setting up the Toradocu test suites.
+## Setting up the Toradocu test projects.
 
 When you clone the toradocu-coverage repository it will create a subdirectory
-for each of the test suites, but it does not download the tests themselves.
+for each of the test projects, but it does not download the test projects themselves.
 This is done by running the fetch_and_compile_corpus script:
 ```
 ./fetch_and_compile_corpus
 ```
-This will download and compile each of the test suites and generate a log in
-`toradocu/logs/<suite name>-fetch-log.txt`.  The test source will be found in
-`toradocu/<suite name>/inputs/<suite-name>`.  Some auxiliary files needed for
-the coverage process will be generated in `toradocu/<suite name>/resources`.
-This will take about 1-3 minutes per test suite.
+This will download and compile each of the test projects and generate a log in
+`toradocu/logs/<projectname>-fetch-log.txt`.  The test source will be found in
+`toradocu/<projectname>/inputs/<suite-name>`.  Some auxiliary files needed for
+the coverage process will be generated in `toradocu/<projectname>/resources`.
+This will take about 1-3 minutes per test project.
 
-Currently, there are six test suites:
-```
-commons-collections
-commons-math (which uses commons-rng)
-freecol
-guava
-jgrapht
-plume-lib
-```
 
-If you are only interested in testing a single suite, you may want to skip this
-time consuming step and just:
+If you are only interested in testing a single suite, just run:
 ```
-cd toradocu/<test suite of interest>
+cd toradocu/<projectname>
 ./gradlew prepareForRandoop
 ```
 This will not create the fetch log file; you can redirect standard out to do so.
 If you are looking at commons-math, you must also run the command above in
 commons-rng.
+
 
 Note: The test org.apache.commons.rng.sampling.distribution.ContinuousSamplerParametricTest
 might fail; if this is the only failure, it can be ignored.
@@ -107,20 +100,20 @@ might fail; if this is the only failure, it can be ignored.
 
 ## Running randoop to generate the coverage test cases.
 
-The next step is to run Randoop over the test suites to generate a set of test
+The next step is to run Randoop over the test projects to generate a set of test
 cases; then pass them to the java compiler.  This is done by running the
 run_randoop_on_corpus script:
 ```
 ./run_randoop_on_corpus
 ```
-This will generate a log file in `toradocu/logs/<suite name>-randoop-log.txt`.
-The generated test source will be found in `toradocu/<suite name>/src/test/java`.
-The corresponding class files in `toradocu/<suite name>/build/classes/test`.
-This will take about 10-15 minutes per test suite.
+This will generate a log file in `toradocu/logs/<projectname>-randoop-log.txt`.
+The generated test source will be found in `toradocu/<projectname>/src/test/java`.
+The corresponding class files in `toradocu/<projectname>/build/classes/test`.
+This will take about 10-15 minutes per test project.
 
 If you are only interested in testing a single suite, you may:
 ```
-cd toradocu/<test suite of interest>
+cd toradocu/<projectname>
 ./gradlew prepareForCoverage
 ```
 This will not create the randoop log file; you can redirect standard out to do so.
@@ -140,10 +133,10 @@ This writes a single log file to `evaluation/logs/coverage-log.txt`.
 The script uses the `extractcoverage` program to pull all of the coverage
 information into the `evaluation/coverage` directory.  The files written here
 include the
-aggregate `report-<date>.csv` and a subdirectory for each test suite of
+aggregate `report-<date>.csv` and a subdirectory for each test project of
 the form:
 ```
-evaluation/coverage/<suite name>/test/
+evaluation/coverage/<projectname>/test/
 ├── jacoco.exec
 ├── log.txt
 └── report.csv
