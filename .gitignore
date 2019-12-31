@@ -7,3 +7,6 @@ logs/
 resources/
 src/
 TAGS
+instrument-log.txt
+method_mapping.txt
+transform-log.txt
