@@ -11,3 +11,11 @@ jobs:
   - bash: ./fetch_and_compile_corpus
     displayName: fetch_and_compile_corpus
 # TODO: use a different version of Randoop
+  - bash: ./run_randoop_on_corpus
+    displayName: run_randoop_on_corpus
+  - bash: ./coverage.sh
+    displayName: coverage.sh
+  - bash: ./show-coverage.pl
+    displayName: show-coverage.pl
+
+
