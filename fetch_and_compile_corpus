@@ -4,6 +4,9 @@ set -e
 set -x
 set -o pipefail
 
+## NOTE: if commons-math is done, commons-rng must be done first, but it comes
+## later in the list.  This script hard-codes that special case.
+
 CORPUSDIR=toradocu
 mkdir -p $CORPUSDIR/logs
 for dirname in $CORPUSDIR/*; do
@@ -12,7 +15,15 @@ for dirname in $CORPUSDIR/*; do
   basename=`basename $dirname`
   log="../logs/$basename-fetch-log.txt"
 
+  if [ "$basename" = "commons-rng" ] ; then
+    continue
+  fi
+
   if [[ -e "$dirname/build.gradle" ]]; then
+    if [ "$basename" = "commons-math" ] ; then
+      echo "fetching $commons-rng"
+      (cd $dirname/../commons-rng; ./gradlew prepareForRandoop 2>&1 | tee $log)
+    fi
     echo "fetching $basename"
     (cd $dirname; ./gradlew prepareForRandoop 2>&1 | tee $log)
   fi
