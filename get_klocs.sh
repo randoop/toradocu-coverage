@@ -2,6 +2,7 @@
 
 set -e
 set -x
+set -o pipefail
 
 CORPUSDIR=toradocu
 for dirname in $CORPUSDIR/*; do
