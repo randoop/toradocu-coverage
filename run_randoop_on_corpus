@@ -9,6 +9,11 @@ for dirname in $CORPUSDIR/*; do
   [ -d "$dirname" ] || continue
 
   basename=`basename $dirname`
+  if [ "$basename" = "commons-rng" ] ; then
+    echo "not running randoop on $basename"
+    continue
+  fi
+
   log="../logs/$basename-randoop-log.txt"
 
   if [[ -e "$dirname/build.gradle" ]]; then
