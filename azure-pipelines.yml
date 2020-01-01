@@ -6,6 +6,9 @@ jobs:
   steps:
   - checkout: self
     fetchDepth: 25
+    # To test locally, do (for example):
+    #   git clone https://github.com/randoop/toradocu-coverage.git --branch dockerfile
+    #   cd toradocu-coverage
   - bash: mkdir -p evaluation/coverage && mkdir -p evaluation/logs && mkdir -p toradocu/logs && (cd extractcoverage && ./gradlew assemble)
     displayName: create-directory-structure.sh
   - bash: ./fetch_and_compile_corpus
