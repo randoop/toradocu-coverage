@@ -4,6 +4,8 @@ set -e
 set -x
 set -o pipefail
 
+export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
+
 ## NOTE: if commons-math is done, commons-rng must be done first, but it comes
 ## later in the list.  This script hard-codes that special case.
 
@@ -18,6 +20,8 @@ for dirname in $CORPUSDIR/*; do
   if [ "$basename" = "commons-rng" ] ; then
     continue
   fi
+
+  # TODO: Are the changes in this file necessary?
 
   if [[ -e "$dirname/build.gradle" ]]; then
     if [ "$basename" = "commons-math" ] ; then
