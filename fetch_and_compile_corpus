@@ -4,6 +4,7 @@ set -e
 set -x
 set -o pipefail
 
+export JAVA_HOME=${JAVA_HOME:-$(dirname $(dirname $(readlink -f $(which javac))))}
 export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
 
 ## NOTE: if commons-math is done, commons-rng must be done first, but it comes
