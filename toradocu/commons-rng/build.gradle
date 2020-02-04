@@ -1,4 +1,5 @@
 /* commons-rng */
+
 def userHome = System.getProperty("user.home")
 def mavenCachePath = files(
   "$userHome/.m2/repository/org/openjdk/jmh/jmh-core/1.13/jmh-core-1.13.jar",
@@ -34,7 +35,7 @@ dependencies {
 }
 
 task getInputs {
-  description 'Places source library for commons-rng in inputs directory'
+  description 'Places source library in inputs directory'
   doLast {
     def libInputsDir = file("${inputsDir}/${libraryName}")
     if (!libInputsDir.exists()) {
@@ -47,7 +48,7 @@ task getInputs {
 }
 
 /*
- * Compiles the commons-rng source files
+ * Compiles the source files
  */
 task compileInputs(type: Exec, dependsOn: getInputs) {
   description "Compile subject library"
@@ -65,7 +66,4 @@ task cleanCompileInputs(type: Exec) {
  */
 task cleanInputs(type: Delete) {
   delete 'inputs'
-}
-
-task getClassList(dependsOn: [getInputs] ) {
 }
