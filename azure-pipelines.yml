@@ -1,4 +1,5 @@
 jobs:
+
 - job: everything
   pool:
     vmImage: 'ubuntu-16.04'
@@ -9,7 +10,7 @@ jobs:
     # To test locally, do (for example):
     #   git clone https://github.com/randoop/toradocu-coverage.git --branch dockerfile
     #   cd toradocu-coverage
-  - bash: mkdir -p evaluation/coverage && mkdir -p evaluation/logs && mkdir -p toradocu/logs && (cd extractcoverage && ./gradlew assemble)
+  - bash: cd extractcoverage && ./gradlew assemble
     displayName: create-directory-structure.sh
   - bash: ./fetch_and_compile_corpus
     displayName: fetch_and_compile_corpus
@@ -21,4 +22,110 @@ jobs:
   - bash: ./show-coverage.pl
     displayName: show-coverage.pl
 
+- job: commons-collections
+  pool:
+    vmImage: 'ubuntu-16.04'
+  container: mdernst/randoop-ubuntu-jdkany-coverage:latest
+  steps:
+  - checkout: self
+    fetchDepth: 25
+  - bash: cd extractcoverage && ./gradlew assemble
+    displayName: create-directory-structure.sh
+  - bash: ./fetch_and_compile_project commons-collections
+    displayName: fetch_and_compile_project
+  - bash: cd commons-collections && ./gradlew prepareForCoverage commons-collections
+    displayName: prepareForCoverage
+  - bash: ./coverage.sh
+    displayName: coverage.sh
+  - bash: ./show-coverage.pl
+    displayName: show-coverage.pl
 
+- job: commons-math
+  pool:
+    vmImage: 'ubuntu-16.04'
+  container: mdernst/randoop-ubuntu-jdkany-coverage:latest
+  steps:
+  - checkout: self
+    fetchDepth: 25
+  - bash: cd extractcoverage && ./gradlew assemble
+    displayName: create-directory-structure.sh
+  - bash: ./fetch_and_compile_project commons-math
+    displayName: fetch_and_compile_project
+  - bash: cd commons-math && ./gradlew prepareForCoverage commons-math
+    displayName: prepareForCoverage
+  - bash: ./coverage.sh
+    displayName: coverage.sh
+  - bash: ./show-coverage.pl
+    displayName: show-coverage.pl
+
+- job: freecol
+  pool:
+    vmImage: 'ubuntu-16.04'
+  container: mdernst/randoop-ubuntu-jdkany-coverage:latest
+  steps:
+  - checkout: self
+    fetchDepth: 25
+  - bash: cd extractcoverage && ./gradlew assemble
+    displayName: create-directory-structure.sh
+  - bash: ./fetch_and_compile_project freecol
+    displayName: fetch_and_compile_project
+  - bash: cd freecol && ./gradlew prepareForCoverage freecol
+    displayName: prepareForCoverage
+  - bash: ./coverage.sh
+    displayName: coverage.sh
+  - bash: ./show-coverage.pl
+    displayName: show-coverage.pl
+
+- job: guava
+  pool:
+    vmImage: 'ubuntu-16.04'
+  container: mdernst/randoop-ubuntu-jdkany-coverage:latest
+  steps:
+  - checkout: self
+    fetchDepth: 25
+  - bash: cd extractcoverage && ./gradlew assemble
+    displayName: create-directory-structure.sh
+  - bash: ./fetch_and_compile_project guava
+    displayName: fetch_and_compile_project
+  - bash: cd guava && ./gradlew prepareForCoverage guava
+    displayName: prepareForCoverage
+  - bash: ./coverage.sh
+    displayName: coverage.sh
+  - bash: ./show-coverage.pl
+    displayName: show-coverage.pl
+
+- job: jgrapht
+  pool:
+    vmImage: 'ubuntu-16.04'
+  container: mdernst/randoop-ubuntu-jdkany-coverage:latest
+  steps:
+  - checkout: self
+    fetchDepth: 25
+  - bash: cd extractcoverage && ./gradlew assemble
+    displayName: create-directory-structure.sh
+  - bash: ./fetch_and_compile_project jgrapht
+    displayName: fetch_and_compile_project
+  - bash: cd jgrapht && ./gradlew prepareForCoverage jgrapht
+    displayName: prepareForCoverage
+  - bash: ./coverage.sh
+    displayName: coverage.sh
+  - bash: ./show-coverage.pl
+    displayName: show-coverage.pl
+
+- job: plume-lib
+  pool:
+    vmImage: 'ubuntu-16.04'
+  container: mdernst/randoop-ubuntu-jdkany-coverage:latest
+  steps:
+  - checkout: self
+    fetchDepth: 25
+  - bash: cd extractcoverage && ./gradlew assemble
+    displayName: create-directory-structure.sh
+  - bash: ./fetch_and_compile_project plume-lib
+    displayName: fetch_and_compile_project
+  - bash: cd plume-lib && ./gradlew prepareForCoverage plume-lib
+    displayName: prepareForCoverage
+  - bash: ./coverage.sh
+    displayName: coverage.sh
+  - bash: ./show-coverage.pl
+    displayName: show-coverage.pl

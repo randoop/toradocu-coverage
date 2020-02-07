@@ -18,6 +18,8 @@ outputpath=$coveragepath/
 junitpath=$projectlibs/junit-4.12.jar
 replacecallpath=$projectlibs/replacecall.jar
 
+mkdir -p $logpath
+
 COMMAND="java -jar $classpath --corpusDirectoryPath $corpuspath --jacocoAgentPath $agentpath --outputPath $outputpath --junitPath $junitpath --replacecallAgentPath $replacecallpath"
 echo $COMMAND
 $COMMAND 2>&1 | tee $logpath/coverage-log.txt

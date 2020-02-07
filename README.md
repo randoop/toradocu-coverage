@@ -52,9 +52,6 @@ To create this directory structure and build the coverage tool:
 ```
 git clone git@gitlab.cs.washington.edu:randoop/toradocu-coverage.git
 cd toradocu-coverage
-mkdir -p evaluation/coverage
-mkdir -p evaluation/logs
-mkdir -p toradocu/logs
 (cd extractcoverage && ./gradlew assemble)
 ```
 
