@@ -68,12 +68,6 @@ task cleanInputs(type: Delete) {
   delete 'inputs'
 }
 
+// Dummy
 task makeResourceDir() {
-  def resourceDir = file("$resourceDirPath")
-  outputs.dir { resourceDir}
-  doLast() {
-    if (!resourceDir.exists()) {
-      file(resourceDir).mkdirs()
-    }
-  }
 }
