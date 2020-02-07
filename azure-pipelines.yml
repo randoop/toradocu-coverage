@@ -33,7 +33,7 @@ jobs:
     displayName: create-directory-structure.sh
   - bash: ./fetch_and_compile_project commons-collections
     displayName: fetch_and_compile_project
-  - bash: cd commons-collections && ./gradlew prepareForCoverage commons-collections
+  - bash: cd toradocu/commons-collections && ./gradlew prepareForCoverage commons-collections
     displayName: prepareForCoverage
   - bash: ./coverage.sh
     displayName: coverage.sh
@@ -51,7 +51,7 @@ jobs:
     displayName: create-directory-structure.sh
   - bash: ./fetch_and_compile_project commons-math
     displayName: fetch_and_compile_project
-  - bash: cd commons-math && ./gradlew prepareForCoverage commons-math
+  - bash: cd toradocu/commons-math && ./gradlew prepareForCoverage commons-math
     displayName: prepareForCoverage
   - bash: ./coverage.sh
     displayName: coverage.sh
@@ -69,7 +69,7 @@ jobs:
     displayName: create-directory-structure.sh
   - bash: ./fetch_and_compile_project freecol
     displayName: fetch_and_compile_project
-  - bash: cd freecol && ./gradlew prepareForCoverage freecol
+  - bash: cd toradocu/freecol && ./gradlew prepareForCoverage freecol
     displayName: prepareForCoverage
   - bash: ./coverage.sh
     displayName: coverage.sh
@@ -87,7 +87,7 @@ jobs:
     displayName: create-directory-structure.sh
   - bash: ./fetch_and_compile_project guava
     displayName: fetch_and_compile_project
-  - bash: cd guava && ./gradlew prepareForCoverage guava
+  - bash: cd toradocu/guava && ./gradlew prepareForCoverage guava
     displayName: prepareForCoverage
   - bash: ./coverage.sh
     displayName: coverage.sh
@@ -105,7 +105,7 @@ jobs:
     displayName: create-directory-structure.sh
   - bash: ./fetch_and_compile_project jgrapht
     displayName: fetch_and_compile_project
-  - bash: cd jgrapht && ./gradlew prepareForCoverage jgrapht
+  - bash: cd toradocu/jgrapht && ./gradlew prepareForCoverage jgrapht
     displayName: prepareForCoverage
   - bash: ./coverage.sh
     displayName: coverage.sh
@@ -123,7 +123,7 @@ jobs:
     displayName: create-directory-structure.sh
   - bash: ./fetch_and_compile_project plume-lib
     displayName: fetch_and_compile_project
-  - bash: cd plume-lib && ./gradlew prepareForCoverage plume-lib
+  - bash: cd toradocu/plume-lib && ./gradlew prepareForCoverage plume-lib
     displayName: prepareForCoverage
   - bash: ./coverage.sh
     displayName: coverage.sh
