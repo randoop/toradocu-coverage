@@ -67,3 +67,13 @@ task cleanCompileInputs(type: Exec) {
 task cleanInputs(type: Delete) {
   delete 'inputs'
 }
+
+task makeResourceDir() {
+  def resourceDir = file("$resourceDirPath")
+  outputs.dir { resourceDir}
+  doLast() {
+    if (!resourceDir.exists()) {
+      file(resourceDir).mkdirs()
+    }
+  }
+}
