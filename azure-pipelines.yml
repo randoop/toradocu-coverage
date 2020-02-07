@@ -22,7 +22,7 @@ jobs:
   - bash: ./show-coverage.pl
     displayName: show-coverage.pl
 
-- job: commons-collections
+- job: commons_collections
   pool:
     vmImage: 'ubuntu-16.04'
   container: mdernst/randoop-ubuntu-jdkany-coverage:latest
@@ -40,7 +40,7 @@ jobs:
   - bash: ./show-coverage.pl
     displayName: show-coverage.pl
 
-- job: commons-math
+- job: commons_math
   pool:
     vmImage: 'ubuntu-16.04'
   container: mdernst/randoop-ubuntu-jdkany-coverage:latest
@@ -112,7 +112,7 @@ jobs:
   - bash: ./show-coverage.pl
     displayName: show-coverage.pl
 
-- job: plume-lib
+- job: plume_lib
   pool:
     vmImage: 'ubuntu-16.04'
   container: mdernst/randoop-ubuntu-jdkany-coverage:latest
