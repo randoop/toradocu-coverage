@@ -25,7 +25,7 @@ dependencies {
 // Note that this is a 'trick' to enforce textual order on dependencies.
 
 def buildAliases = [
-  'prepareForRandoop'  : ['getInputs', 'compileInputs'],
+  'prepareForRandoop'  : ['getInputs', 'makeResourceDir', 'compileInputs'],
   'prepareForCoverage' : ['cleanRandoop', 'cleanTest', 'runRandoop', 'compileTestJava']
 ]
 def expandedTaskList = []
@@ -89,7 +89,7 @@ task makeResourceDir() {
 
 /**** Randoop tasks ****/
 
-task runRandoop(dependsOn: [getInputs, compileInputs]) {
+task runRandoop(dependsOn: [getInputs, makeResourceDir, compileInputs]) {
   group 'test generation'
   description "Runs Randoop to first error test (or 15 minutes) on resources/evallist.txt"
   def inputClasspath = libraryJarPath

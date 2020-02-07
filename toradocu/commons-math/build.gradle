@@ -35,7 +35,7 @@ dependencies {
 // Note that this is a 'trick' to enforce textual order on dependencies.
 
 def buildAliases = [
-  'prepareForRandoop'  : ['getInputs', 'compileInputs'],
+  'prepareForRandoop'  : ['getInputs', 'makeResourceDir', 'compileInputs'],
   'prepareForCoverage' : ['cleanRandoop', 'cleanTest', 'runRandoop', 'compileTestJava']
 ]
 def expandedTaskList = []
