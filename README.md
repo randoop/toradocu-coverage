@@ -55,7 +55,6 @@ cd ..
 
 By default the scripts will run the Randoop that is located in the
 `toradocu/libs` subdirectory.
-This is initially set to be the 3.1.5 release version of Randoop.
 To use a different Randoop, replace `toradocu/libs/randoop.jar` with a
 symbolic link to the version you want to use, probably in
 `build/libs/randoop-all-X.X.X.jar` of your clone of Randoop.  Example:
