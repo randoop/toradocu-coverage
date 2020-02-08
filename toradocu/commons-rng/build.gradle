@@ -50,13 +50,13 @@ task getInputs {
  */
 task compileInputs(type: Exec, dependsOn: getInputs) {
   description "Compile subject library"
-  commandLine "mvn", "-f", libraryScriptPath, "package", "-DskipTests", "-DMaven.test.skip=true"
+  commandLine "mvn", "-B", "-f", libraryScriptPath, "package", "-DskipTests", "-DMaven.test.skip=true"
   outputs.files(libraryJars)
 }
 
 task cleanCompileInputs(type: Exec) {
   description "Invokes clean task for subject library"
-  commandLine "mvn", "-f", libraryScriptPath, "clean"
+  commandLine "mvn", "-B", "-f", libraryScriptPath, "clean"
 }
 
 /*

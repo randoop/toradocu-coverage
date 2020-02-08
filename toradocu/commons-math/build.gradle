@@ -70,12 +70,12 @@ task getInputs {
  */
 task compileInputs(type: Exec, dependsOn: getInputs) {
   description "Compile subject library"
-  commandLine "mvn", "-f", libraryScriptPath, "-DskipTests", "package"
+  commandLine "mvn", "-B", "-f", libraryScriptPath, "-DskipTests", "package"
 }
 
 task cleanCompileInputs(type: Exec) {
   description "Invokes clean task for subject library"
-  commandLine "mvn", "-f", libraryScriptPath, "clean"
+  commandLine "mvn", "-B", "-f", libraryScriptPath, "clean"
 }
 
 /*
