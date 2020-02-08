@@ -9,9 +9,9 @@ set -o pipefail
 
 if [ -d "../randoop" ]
 then
-    cd ../randoop && git pull
+    (cd ../randoop && git pull)
 else
-    cd .. && git clone https://github.com/randoop/randoop.git
+    (cd .. && git clone https://github.com/randoop/randoop.git)
 fi
 
 (cd ../randoop && ./gradlew assemble)
