@@ -1,6 +1,7 @@
 plugins {
-  id 'com.github.johnrengelman.shadow' version '5.2.0'
   id 'java'
+  id 'application'
+  id 'com.github.johnrengelman.shadow' version '5.2.0' //  apply false
 }
 
 repositories {
@@ -14,6 +15,16 @@ dependencies {
     implementation group: 'org.jacoco', name: 'org.jacoco.report', version: '0.7.7.201606060606'
 
     testImplementation 'junit:junit:4.12'
+}
+
+mainClassName = 'randoop.jacoco.CoverageAnalyzer'
+
+jar {
+  manifest {
+    attributes(
+      'Main-Class': 'randoop.jacoco.CoverageAnalyzer'
+    )
+  }
 }
 
 assemble.dependsOn shadowJar
