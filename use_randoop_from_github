@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Use the version of Randoop from GitHub, or
+# the one at ../randoop if it already exists.
+
+set -e
+set -x
+set -o pipefail
+
+if [ -d "../randoop" ]
+then
+    cd ../randoop && git pull
+else
+    cd .. && git clone https://github.com/randoop/randoop.git
+fi
+
+(cd ../randoop && ./gradlew assemble)
+
+(cd toradocu/libs && ../randoop/scripts/replace-randoop-jars.sh)

@@ -14,6 +14,8 @@ jobs:
     displayName: create-directory-structure.sh
   - bash: ./fetch_and_compile_corpus
     displayName: fetch_and_compile_corpus
+  - bash: ./use_randoop_from_github
+    displayName: use-randoop-from-github
 # TODO: use a different version of Randoop
   - bash: ./run_randoop_on_corpus
     displayName: run_randoop_on_corpus
@@ -33,6 +35,8 @@ jobs:
     displayName: create-directory-structure.sh
   - bash: ./fetch_and_compile_project commons-collections
     displayName: fetch_and_compile_project
+  - bash: ./use_randoop_from_github
+    displayName: use-randoop-from-github
   - bash: cd toradocu/commons-collections && ./gradlew prepareForCoverage
     displayName: prepareForCoverage
   - bash: ./coverage.sh
@@ -51,6 +55,8 @@ jobs:
     displayName: create-directory-structure.sh
   - bash: ./fetch_and_compile_project commons-math
     displayName: fetch_and_compile_project
+  - bash: ./use_randoop_from_github
+    displayName: use-randoop-from-github
   - bash: cd toradocu/commons-math && ./gradlew prepareForCoverage
     displayName: prepareForCoverage
   - bash: ./coverage.sh
@@ -69,6 +75,8 @@ jobs:
     displayName: create-directory-structure.sh
   - bash: ./fetch_and_compile_project freecol
     displayName: fetch_and_compile_project
+  - bash: ./use_randoop_from_github
+    displayName: use-randoop-from-github
   - bash: cd toradocu/freecol && ./gradlew prepareForCoverage
     displayName: prepareForCoverage
   - bash: ./coverage.sh
@@ -87,6 +95,8 @@ jobs:
     displayName: create-directory-structure.sh
   - bash: ./fetch_and_compile_project guava
     displayName: fetch_and_compile_project
+  - bash: ./use_randoop_from_github
+    displayName: use-randoop-from-github
   - bash: cd toradocu/guava && ./gradlew prepareForCoverage
     displayName: prepareForCoverage
   - bash: ./coverage.sh
@@ -105,6 +115,8 @@ jobs:
     displayName: create-directory-structure.sh
   - bash: ./fetch_and_compile_project jgrapht
     displayName: fetch_and_compile_project
+  - bash: ./use_randoop_from_github
+    displayName: use-randoop-from-github
   - bash: cd toradocu/jgrapht && ./gradlew prepareForCoverage
     displayName: prepareForCoverage
   - bash: ./coverage.sh
@@ -123,6 +135,8 @@ jobs:
     displayName: create-directory-structure.sh
   - bash: ./fetch_and_compile_project plume-lib
     displayName: fetch_and_compile_project
+  - bash: ./use_randoop_from_github
+    displayName: use-randoop-from-github
   - bash: cd toradocu/plume-lib && ./gradlew prepareForCoverage
     displayName: prepareForCoverage
   - bash: ./coverage.sh
