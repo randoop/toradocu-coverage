@@ -1,4 +1,8 @@
-apply plugin: 'java'
+plugins {
+  id 'java'
+  id 'application'
+  id 'com.github.johnrengelman.shadow' version '5.2.0' //  apply false
+}
 
 repositories {
     mavenCentral()
@@ -13,19 +17,14 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
-task singleJar (type: Jar) {
-  group "build"
-  description "Assemble a fat jar archive of Randoop and runtime dependencies"
+mainClassName = 'randoop.jacoco.CoverageAnalyzer'
+
+jar {
   manifest {
-    attributes 'Main-class': 'randoop.jacoco.CoverageAnalyzer'
+    attributes(
+      'Main-Class': 'randoop.jacoco.CoverageAnalyzer'
+    )
   }
-  baseName = project.name + '-all'
-  from ( configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } ) {
-    exclude "META-INF/*.SF"
-    exclude "META-INF/*.DSA"
-    exclude "META-INF/*.RSA"
-  }
-  with jar
 }
 
-assemble.dependsOn singleJar
+assemble.dependsOn shadowJar
