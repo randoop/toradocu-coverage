@@ -42,7 +42,7 @@ println "\nexpanded task list: ${gradle.startParameter.taskNames }\n"
 /**** Tasks for managing a local copy of the project ****/
 
 /*
- * Download a copy of the project clone of the project
+ * Download a copy of the project
  */
 task getInputs {
   description 'Places source library in inputs directory'

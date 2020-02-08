@@ -1,5 +1,3 @@
-/* JGraphT */
-
 def libraryName = 'jgrapht'
 def libraryJar = 'jgrapht-core-1.0.2-SNAPSHOT.jar'
 def repoURI = 'https://github.com/randoop/jgrapht.git'
@@ -42,7 +40,7 @@ gradle.startParameter.taskNames = expandedTaskList.flatten()
 /**** Tasks for managing a local copy of the project ****/
 
 /*
- * Download a copy of the project clone of the project
+ * Download a copy of the project
  */
 task getInputs {
   description 'Places source library in inputs directory'
