@@ -16,4 +16,4 @@ fi
 
 (cd ../randoop && ./gradlew assemble)
 
-(cd toradocu/libs && ../randoop/scripts/replace-randoop-jars.sh)
+(cd toradocu/libs && ../../../randoop/scripts/replace-randoop-jars.sh)
