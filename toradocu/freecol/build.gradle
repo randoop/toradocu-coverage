@@ -1,5 +1,3 @@
-/* FreeCol */
-
 def libraryName = 'FreeCol'
 def libraryJar = 'FreeCol.jar'
 def repoURI = 'https://github.com/randoop/FreeCol.git'
@@ -41,13 +39,13 @@ gradle.startParameter.taskNames = expandedTaskList.flatten()
 println "\nexpanded task list: ${gradle.startParameter.taskNames }\n"
 
 
-/**** Tasks for managing a local copy of FreeCol ****/
+/**** Tasks for managing a local copy of the project ****/
 
 /*
- * Download a copy of the project clone of FreeCol
+ * Download a copy of the project
  */
 task getInputs {
-  description 'Places source library for FreeCol in inputs directory'
+  description 'Places source library in inputs directory'
   doLast {
     def libInputsDir = file("${inputsDir}/${libraryName}")
     if (!libInputsDir.exists()) {
@@ -60,7 +58,7 @@ task getInputs {
 }
 
 /*
- * Compiles the FreeCol-lib source files
+ * Compiles the source files
  */
 task compileInputs(type: Exec, dependsOn: getInputs) {
   description "Compile subject library"

@@ -41,13 +41,13 @@ gradle.startParameter.taskNames = expandedTaskList.flatten()
 println "\nexpanded task list: ${gradle.startParameter.taskNames }\n"
 
 
-/**** Tasks for managing a local copy of plume-lib ****/
+/**** Tasks for managing a local copy of the project ****/
 
 /*
- * Download a copy of the project clone of plume-lib
+ * Download a copy of the project
  */
 task getInputs {
-  description 'Places source library for plume-lib in inputs directory'
+  description 'Places source library in inputs directory'
   doLast {
     def libInputsDir = file("${inputsDir}/${libraryName}")
     if (!libInputsDir.exists()) {
@@ -60,7 +60,7 @@ task getInputs {
 }
 
 /*
- * Compiles the plume-lib source files
+ * Compiles the source files
  */
 task compileInputs(type: Exec, dependsOn: getInputs) {
   description "Compile subject library"

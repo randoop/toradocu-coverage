@@ -39,13 +39,13 @@ gradle.startParameter.taskNames = expandedTaskList.flatten()
 println "\nexpanded task list: ${gradle.startParameter.taskNames }\n"
 
 
-/**** Tasks for managing a local copy of commons-collections ****/
+/**** Tasks for managing a local copy of the project ****/
 
 /*
- * Download a copy of the project clone of commons-collections
+ * Download a copy of the project
  */
 task getInputs {
-  description 'Places source library for commons-collections in inputs directory'
+  description 'Places source library in inputs directory'
   doLast {
     def libInputsDir = file("${inputsDir}/${libraryName}")
     if (!libInputsDir.exists()) {
@@ -58,7 +58,7 @@ task getInputs {
 }
 
 /*
- * Compiles the commons-collections source files
+ * Compiles the source files
  */
 task compileInputs(type: Exec, dependsOn: getInputs) {
   description "Compile subject library"
