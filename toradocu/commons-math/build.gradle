@@ -1,5 +1,3 @@
-/* commons-math */
-
 def libraryName = 'commons-math'
 def libraryJar = 'commons-math4-4.0-SNAPSHOT.jar'
 def repoURI = 'https://github.com/randoop/commons-math.git'
