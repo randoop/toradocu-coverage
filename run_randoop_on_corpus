@@ -1,13 +1,23 @@
 #!/bin/bash
+
+set -e
+set -x
+set -o pipefail
+
 CORPUSDIR=toradocu
 for dirname in $CORPUSDIR/*; do
   [ -d "$dirname" ] || continue
 
-  basename=`basename $dirname`
-  log="../logs/$basename-randoop-log.txt"
+  PROJECT=`basename $dirname`
+  if [ "$PROJECT" = "commons-rng" ] ; then
+    echo "not running randoop on $PROJECT"
+    continue
+  fi
+
+  log="../logs/$PROJECT-randoop-log.txt"
 
   if [[ -e "$dirname/build.gradle" ]]; then
-    echo "running randoop on $basename"
+    echo "running randoop on $PROJECT"
     (cd $dirname; ./gradlew prepareForCoverage 2>&1 | tee $log)
   fi
 done

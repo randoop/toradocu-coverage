@@ -1,14 +1,27 @@
 #!/bin/bash
+
+set -e
+set -x
+set -o pipefail
+
+export JAVA_HOME=${JAVA_HOME:-$(dirname $(dirname $(readlink -f $(which javac))))}
+export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
+
+## NOTE: if commons-math is done, commons-rng must be done first, but it comes
+## later in the list.  This script hard-codes that special case.
+
 CORPUSDIR=toradocu
 mkdir -p $CORPUSDIR/logs
 for dirname in $CORPUSDIR/*; do
   [ -d "$dirname" ] || continue
 
-  basename=`basename $dirname`
-  log="../logs/$basename-fetch-log.txt"
+  PROJECT=`basename $dirname`
+
+  if [ "$PROJECT" = "commons-rng" ] ; then
+    continue
+  fi
 
   if [[ -e "$dirname/build.gradle" ]]; then
-    echo "fetching $basename"
-    (cd $dirname; ./gradlew prepareForRandoop 2>&1 | tee $log)
+    ./fetch_and_compile_project $PROJECT
   fi
 done

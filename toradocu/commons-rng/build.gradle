@@ -50,7 +50,7 @@ task getInputs {
  */
 task compileInputs(type: Exec, dependsOn: getInputs) {
   description "Compile subject library"
-  commandLine "mvn", "-B", "-f", libraryScriptPath, "-DMaven.test.skip=true", "package"
+  commandLine "mvn", "-B", "-f", libraryScriptPath, "package", "-DskipTests", "-DMaven.test.skip=true"
   outputs.files(libraryJars)
 }
 
@@ -66,5 +66,6 @@ task cleanInputs(type: Delete) {
   delete 'inputs'
 }
 
-task getClassList(dependsOn: [getInputs] ) {
+// Dummy
+task makeResourceDir() {
 }

@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -e
+set -x
+set -o pipefail
+
+PROJECT=$1
+
+export JAVA_HOME=${JAVA_HOME:-$(dirname $(dirname $(readlink -f $(which javac))))}
+export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
+
+CORPUSDIR=toradocu
+mkdir -p $CORPUSDIR/logs
+
+# Relative to $PROJECT
+log="../logs/$PROJECT-fetch-log.txt"
+
+if [ "$PROJECT" = "commons-math" ] ; then
+  echo "fetching $commons-rng"
+  (cd $CORPUSDIR/$PROJECT/../commons-rng; ./gradlew prepareForRandoop 2>&1 | tee $log)
+fi
+echo "fetching $PROJECT"
+(cd $CORPUSDIR/$PROJECT; ./gradlew prepareForRandoop 2>&1 | tee $log)
