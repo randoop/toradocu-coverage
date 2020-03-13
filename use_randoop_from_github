@@ -11,7 +11,7 @@ if [ -d "../randoop" ]
 then
     (cd ../randoop && git pull)
 else
-    (cd .. && git clone -b methodListGenASM https://github.com/caseyxing/randoop.git)
+    (cd .. && git clone -b randoop-without-sef https://github.com/caseyxing/randoop.git)
 fi
 
 (cd ../randoop && ./gradlew assemble)
