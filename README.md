@@ -1,5 +1,7 @@
 # Toradocu-coverage computations
 
+### Note: This branch is for experimentation purposes only.
+
 This document describes how to setup and run an evaluation of Randoop test
 coverage over the Toradocu corpus.
 
