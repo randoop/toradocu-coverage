@@ -6,6 +6,7 @@ set -o pipefail
 
 PROJECT=$1
 
+# shellcheck disable=SC2046,SC2230
 export JAVA_HOME=${JAVA_HOME:-$(dirname $(dirname $(readlink -f $(which javac))))}
 export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
 
@@ -16,8 +17,11 @@ mkdir -p $CORPUSDIR/logs
 log="../logs/$PROJECT-fetch-log.txt"
 
 if [ "$PROJECT" = "commons-math" ] ; then
-  echo "fetching $commons-rng"
-  (cd $CORPUSDIR/$PROJECT/../commons-rng; ./gradlew prepareForRandoop 2>&1 | tee $log)
+  echo "fetching commons-rng"
+  (cd "$CORPUSDIR/$PROJECT/../commons-rng"; ./gradlew prepareForRandoop 2>&1 | tee "$log") \
+    || (sleep 5m && cd "$CORPUSDIR/$PROJECT/../commons-rng"; ./gradlew prepareForRandoop 2>&1 | tee "$log"-2)
 fi
 echo "fetching $PROJECT"
-(cd $CORPUSDIR/$PROJECT; ./gradlew prepareForRandoop 2>&1 | tee $log)
+(cd "$CORPUSDIR/$PROJECT"; ./gradlew prepareForRandoop 2>&1 | tee "$log") \
+  || (sleep 5m && cd "$CORPUSDIR/$PROJECT"; ./gradlew prepareForRandoop 2>&1 | tee "$log"-2)
+
