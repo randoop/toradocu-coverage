@@ -62,7 +62,7 @@ By default the scripts will run the Randoop that is located in the
 `toradocu/libs` subdirectory.
 To use a different version, run
 ```
-(cd toradocu/libs && MY_RANDOOP/scripts/replace-randoop-jars.sh)
+(cd toradocu/libs && <path to your randoop repository>/scripts/replace-randoop-jars.sh)
 ```
 
 
